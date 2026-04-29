@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "../../css/login.scss";
 import { useForm } from "react-hook-form";
 import { api } from "../../utils/api.ts";
+import useAuthStore from "../../store/useAuthStore.tsx"
 
 interface IForm {
   userId: string;
@@ -12,6 +13,8 @@ interface IForm {
 export default function Login() {
 
   const navigate = useNavigate();
+  const { login } = useAuthStore();
+  const { logout } = useAuthStore();
 
   const {
     register,
@@ -24,8 +27,16 @@ export default function Login() {
   
   const onSubmit = async (data: IForm) => {
     try {
-      await api.post('/api/member/login', data);
-      navigate('/');
+      const rs = await api.post('/api/member/login', data);
+      if (rs.data.success != true){
+        alert(rs.data.message);
+        logout();
+      }
+      else{
+        const { userId, userName, accessToken } = rs.data;
+        login(userId, userName, accessToken);
+        navigate('/');
+      }
     } catch (err: any) {
       if (err.response) {
         alert(`서버 오류: ${err.response.status}`);
