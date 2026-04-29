@@ -1,0 +1,274 @@
+.board-list-wrap {
+    width: 100%;
+    min-height: 500px;
+    padding: 30px;
+    background: #fff;
+  }
+  
+  
+  .board-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .board-title {
+    margin: 0;
+    font-size: 32px;
+    color: #333;
+  }
+  
+  .board-desc {
+    margin-top: 6px;
+    font-size: 14px;
+    color: #888;
+  }
+  
+  .write-button {
+    padding: 10px 18px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  
+  .write-button:hover {
+    background: #f5f5f5;
+  }
+  
+  .board-table {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .board-table-head,
+  .board-row {
+    display: grid;
+    grid-template-columns: 1fr 140px;
+    align-items: center;
+  }
+  
+  .board-table-head {
+    padding: 16px 20px;
+    background: #f5f5f5;
+    font-weight: 600;
+    color: #666;
+  }
+
+  .board-row-date-title {
+    text-align: center;
+  }
+  
+  .board-row {
+    padding: 16px 20px;
+    border-top: 1px solid #eee;
+    transition: background 0.2s;
+  }
+  
+  .board-row:hover {
+    background: #fafafa;
+  }
+  
+  .board-row-title {
+    color: #333;
+    cursor: pointer;
+  }
+  
+  .board-row-date {
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 30px;
+  }
+  
+  .page-button {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  
+  .page-button:hover {
+    background: #f5f5f5;
+  }
+  
+  .page-button.active {
+    background: #333;
+    color: #fff;
+    border-color: #333;
+  }
+  
+/* ===== WRITE PAGE 추가분만 ===== */
+
+.board-write-wrap {
+  width: 100%;
+  min-height: 500px;
+  padding: 30px;
+  background: #fff;
+}
+
+.board-write-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+  
+}
+
+.board-write-title {
+  margin: 0;
+  font-size: 32px;
+  color: #333;
+}
+
+.board-write-desc {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #888;
+}
+
+.board-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.board-form-row {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+.board-form-row input,
+.board-form-row textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.board-form-row textarea {
+  min-height: 200px;
+  resize: none;
+}
+
+.board-form-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.board-submit-button {
+  padding: 10px 18px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.board-submit-button:hover {
+  background: #f5f5f5;
+}
+
+
+/* ===== VIEW PAGE 추가분 ===== */
+
+.board-view-wrap {
+  width: 100%;
+  min-height: 500px;
+  padding: 30px;
+  background: #fff;
+}
+
+.board-view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* 제목 + 날짜 영역 */
+.board-meta {
+  padding: 20px 0;
+  border-bottom: 1px solid #c9c9c9;
+}
+
+.board-meta .board-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.board-meta .board-date {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #888;
+}
+
+/* 본문 영역 */
+.board-content {
+  padding: 25px 5px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #333;
+  white-space: pre-wrap;
+  min-height: 300px;
+  border-bottom: 1px solid #c9c9c9;
+}
+
+.board-view-title {
+  margin: 0;
+  font-size: 32px;
+  color: #333;
+}
+
+/* 목록 버튼 (write-button 재사용 가능) */
+.view-button {
+  padding: 10px 18px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.view-button:hover {
+  background: #f5f5f5;
+}
+
+.board-view-footer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.view-button.danger {
+  border: 1px solid #ff4d4f;
+  color: #ff4d4f;
+}
+
+.view-button.danger:hover {
+  background: #fff1f0;
+}
