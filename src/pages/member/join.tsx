@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import "../../css/login.scss";
-import { api } from "../../utils/api.ts";
+import { freeApi } from "../../utils/api.ts";
 import { useRef } from "react";
 
 interface IForm {
@@ -30,7 +30,7 @@ export default function Login() {
 
   const onSubmit = async (data: IForm) => {
     try {
-      await api.post('/api/member/join', data);
+      await freeApi.post('/api/member/join', data);
       alert('회원가입 완료');
       navigate('/Login');
     } catch (err: any) {
@@ -72,7 +72,7 @@ export default function Login() {
                   // window.setTimeout을 쓰면 리턴 타입이 확실히 number가 되어 에러가 안 납니다.
                   idCheckTimer.current = window.setTimeout(async () => {
                     try {
-                      const res = await api.post('/api/member/check-id', { userId: value });
+                      const res = await freeApi.post('/api/member/check-id', { userId: value });
                       
                       // 결과값(0 또는 1)에 따라 메시지 결정
                       const isDuplicate = res.data.checkResult === 1;
@@ -111,7 +111,7 @@ export default function Login() {
           />
           {errors.userPw_re && <p className="error-msg">{errors.userPw_re.message}</p>}
 
-           {/* 이메일 */}
+           {/* 이름 */}
            <input
             type="text"
             placeholder="이름"

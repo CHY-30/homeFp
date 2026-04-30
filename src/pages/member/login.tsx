@@ -2,7 +2,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import "../../css/login.scss";
 import { useForm } from "react-hook-form";
-import { api } from "../../utils/api.ts";
+import { freeApi } from "../../utils/api.ts";
 import useAuthStore from "../../store/useAuthStore.tsx"
 
 interface IForm {
@@ -27,14 +27,14 @@ export default function Login() {
   
   const onSubmit = async (data: IForm) => {
     try {
-      const rs = await api.post('/api/member/login', data);
+      const rs = await freeApi.post('/api/member/login', data);
       if (rs.data.success != true){
         alert(rs.data.message);
         logout();
       }
       else{
-        const { userId, userName, accessToken } = rs.data;
-        login(userId, userName, accessToken);
+        const { userMidx, userId, userName, accessToken } = rs.data;
+        login(userMidx, userId, userName, accessToken);
         navigate('/');
       }
     } catch (err: any) {
