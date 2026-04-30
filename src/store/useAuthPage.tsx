@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';
 import type { ReactNode } from 'react';
 
@@ -13,7 +13,7 @@ const AuthGuard = ({ children }: authIf) => {
     return <Navigate to="/login" replace />;
   }
 
-  return children;
+  return children ? children : <Outlet />;
 };
 
 export default AuthGuard;
