@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../css/board.css";
 import { api } from "../../utils/api.ts"; //db경로
+import useAuthStore from "../../store/useAuthStore.tsx"
 
 
 export default function Write() {
@@ -9,11 +10,13 @@ export default function Write() {
   const navigate = useNavigate();
 
   interface from {
+    userMidx: number
     title: string
     content: string
   }
 
   const [form, setForm] = useState<from>({
+    userMidx: 0,
     title: '',
     content: ''
   });
@@ -37,11 +40,18 @@ export default function Write() {
       return;
     }
     try{
-      await api.post('/api/board', form);
+
+      //새로운폼으로 전달
+      const newForm = {
+        ...form,
+        userMidx: useAuthStore.getState().userMidx
+      }
+      await api.post('/api/board', newForm);
       alert('등록 완료');
       navigate('/boardList');
     }
     catch(err: any){
+      console.log(err.response);
       if (err.response) {
         alert(`서버 오류: ${err.response.status}`);
       } else if (err.request) {
