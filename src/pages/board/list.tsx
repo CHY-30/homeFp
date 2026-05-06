@@ -12,13 +12,19 @@ export default function List() {
     created_at: Date;
   };
   
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   const [posts, setPosts] = useState<Board[]>([]);
   
   // 목록 조회
-  const fetchPosts = async () => {
+  const fetchPosts = async (page = 1) => {
     try{
-      const res = await api.get("/api/board");
-      setPosts(res.data);
+      const res = await api.get(`/api/board?page=${page}`);
+
+      setPosts(res.data.data);
+      setTotalPages(res.data.totalPages);
+      setCurrentPage(res.data.currentPage);
     }
     catch(err: any){
       if (err.response) {
@@ -32,8 +38,8 @@ export default function List() {
   };
   
   useEffect(() => {
-    fetchPosts();
-  }, []);
+    fetchPosts(currentPage);
+  }, [currentPage]);
     
   return (
     <div className="board-list-wrap">
@@ -63,17 +69,25 @@ export default function List() {
         ))}
       </div>
       
-      {/*
+      
       <div className="pagination">
-        <button className="page-button">&lt;</button>
-        <button className="page-button active">1</button>
-        <button className="page-button">2</button>
-        <button className="page-button">3</button>
-        <button className="page-button">4</button>
-        <button className="page-button">&gt;</button>
+        <button className="page-button"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(prev => prev - 1 )}
+        >&lt;</button>
+        {[...Array(totalPages)].map((_, i) => (
+          <button 
+            key={i + 1}
+            onClick={() => setCurrentPage(i + 1)}
+            className={`page-button ${currentPage === i + 1 ? 'active' : ''}`}
+
+          >{i + 1}</button>
+        ))}
+        <button className="page-button"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(prev => prev + 1 )}
+        >&gt;</button>
       </div>
-      */
-      }
     </div>
   );
 }
