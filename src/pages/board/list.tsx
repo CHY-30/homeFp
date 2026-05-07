@@ -114,7 +114,7 @@ export default function List() {
         {/* 검색 폼 (라이브러리 없이 직접 구현) */}
         <form onSubmit={onSearch} className="search-wrap">
           <select 
-            name="sText" 
+            name="sType" 
             value={sType}
             onChange={handleInputChange}
           >
