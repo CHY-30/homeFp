@@ -16,7 +16,7 @@ export default function List() {
   const [totalPages, setTotalPages] = useState(1); //총페이지
   const [posts, setPosts] = useState<Board[]>([]); // 리스트
 
-  const [sType,  setSType] = useState('all'); //검색타입
+  const [sType, setSType] = useState('all'); //검색타입
   const [sText, setSText] = useState(''); //검색어
 
   const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
@@ -132,8 +132,6 @@ export default function List() {
           />
           <button type="submit">검색하기</button>
         </form>
-
-        {/* 테이블 및 페이징 로직은 동일 */}
       </div>
     </div>
   );
