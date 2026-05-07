@@ -12,15 +12,29 @@ export default function List() {
     created_at: Date;
   };
   
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1); //페이지
+  const [totalPages, setTotalPages] = useState(1); //총페이지
+  const [posts, setPosts] = useState<Board[]>([]); // 리스트
 
-  const [posts, setPosts] = useState<Board[]>([]);
+  const [sType,  setSType] = useState('all'); //검색타입
+  const [sText, setSText] = useState(''); //검색어
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+    const { name, value } = e.target;
+    if(name === "sType"){setSType(value);}
+    if(name === "sText"){setSText(value);}
+  };
   
   // 목록 조회
   const fetchPosts = async (page = 1) => {
     try{
-      const res = await api.get(`/api/board?page=${page}`);
+      const res = await api.get(`/api/board`,{
+        params:{
+         page: page,
+         sType: sType,
+         sText: sText
+        }
+      });
 
       setPosts(res.data.data);
       setTotalPages(res.data.totalPages);
@@ -40,6 +54,13 @@ export default function List() {
   useEffect(() => {
     fetchPosts(currentPage);
   }, [currentPage]);
+
+  //검색버튼
+  const onSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCurrentPage(1);
+    fetchPosts(1);
+  };
     
   return (
     <div className="board-list-wrap">
@@ -87,6 +108,32 @@ export default function List() {
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage(prev => prev + 1 )}
         >&gt;</button>
+      </div>
+
+      <div>
+        {/* 검색 폼 (라이브러리 없이 직접 구현) */}
+        <form onSubmit={onSearch} className="search-wrap">
+          <select 
+            name="sText" 
+            value={sType}
+            onChange={handleInputChange}
+          >
+            <option value="all">전체</option>
+            <option value="title">제목</option>
+            <option value="content">내용</option>
+          </select>
+          
+          <input 
+            type="text"
+            name="sText"
+            value={sText}
+            onChange={handleInputChange}
+            placeholder="검색어를 입력하세요" 
+          />
+          <button type="submit">검색하기</button>
+        </form>
+
+        {/* 테이블 및 페이징 로직은 동일 */}
       </div>
     </div>
   );
