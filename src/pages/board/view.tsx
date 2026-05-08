@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useSearchParams } from "react-router-dom";
 import "../../css/board.css";
 import { api } from "../../utils/api.ts";
 
 export default function Detail() {
 
+  const [ searchParams ] = useSearchParams();
   const navigate = useNavigate();
   const { id } = useParams();
   const Viewid = Number(id);
@@ -42,7 +43,7 @@ export default function Detail() {
       await api.delete(`/api/board/${id}`);
       alert('삭제되었습니다.');
       //리스트이동
-      navigate('/boardList');
+      navigate(`/boardList?${searchParams.toString()}`);
   
       // 또는 화면에서 바로 제거하고 싶으면:
       // setPosts(prev => prev.filter(post => post.id !== id));
@@ -62,7 +63,7 @@ export default function Detail() {
       <div className="board-view-header">
         <h1 className="board-view-title">게시글</h1>
 
-        <Link to="/boardList">
+        <Link to={`/boardList?${searchParams.toString()}`}>
         <button className="view-button">목록으로</button>
         </Link>
       </div>
@@ -82,7 +83,7 @@ export default function Detail() {
 
       <div className="board-view-footer">
 
-        <Link to={`/boardEdit/${id}`}>
+        <Link to={`/boardEdit/${id}?${searchParams.toString()}`}>
         <button className="view-button">수정하기</button>
         </Link>
 

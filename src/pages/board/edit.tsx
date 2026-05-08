@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import "../../css/board.css";
 import { api } from "../../utils/api.ts"; //db경로
 
 
 export default function Write() {
 
+  const [ searchParams ] = useSearchParams();
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -48,7 +49,7 @@ export default function Write() {
     try{
       await api.put(`/api/board/${id}`, form);
       alert('수정 완료');
-      navigate('/boardList');
+      navigate(`/boardList?${searchParams.toString()}`);
     }
     catch(err: any){
       if (err.response) {
@@ -71,7 +72,7 @@ export default function Write() {
           <h1 className="board-write-title">글수정</h1>
         </div>
 
-        <Link to="/BoardList">
+        <Link to={`/BoardList?${searchParams.toString()}`}>
         <button className="write-button">목록으로</button>
         </Link>
       </div>

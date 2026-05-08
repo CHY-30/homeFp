@@ -24,10 +24,10 @@ export default function App() {
         <Route element={<AuthGuard />}>
           <Route element={<Layout />}>
             <Route path="/" element={<Main />} />
-            <Route path="/BoardList" element={<BoardList />} />
             <Route path="/BoardWrite" element={<BoardWrite />} />
             <Route path="/BoardView/:id" element={<BoardView />} />
             <Route path="/BoardEdit/:id" element={<BoardEdit />} />
+            <Route path="/BoardList" element={<BoardList />} />
           </Route>
         </Route>
 

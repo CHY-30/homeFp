@@ -272,3 +272,82 @@
 .view-button.danger:hover {
   background: #fff1f0;
 }
+
+
+/* 검색 폼 스타일 */
+.search-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 왼쪽 정렬 */
+  gap: 8px; /* 요소들 사이 간격 */
+  margin: 20px 0;
+  padding: 10px 0;
+}
+
+/* select 상자 스타일 */
+.search-wrap select {
+  height: 40px;
+  padding: 0 30px 0 12px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  
+  /* 화살표 아이콘 커스텀 (깔끔한 화살표) */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px;
+  
+  transition: all 0.2s ease;
+}
+
+.search-wrap select:hover {
+  border-color: #bbb;
+}
+
+/* 검색 입력창 스타일 */
+.search-wrap input[type="text"] {
+  width: 280px; /* 입력창 너비 */
+  height: 40px;
+  padding: 0 15px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.search-wrap input[type="text"]:focus {
+  border-color: #555; /* 포커스 시 테두리 색상 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 은은한 그림자 */
+}
+
+/* 검색 버튼 스타일 */
+.search-wrap button {
+  height: 40px;
+  padding: 0 20px;
+  background-color: #444; /* 다크 그레이 색상 */
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-wrap button:hover {
+  background-color: #000; /* 호버 시 블랙 */
+  transform: translateY(-1px); /* 살짝 위로 뜨는 효과 */
+}
+
+.search-wrap button:active {
+  transform: translateY(0); /* 클릭 시 원위치 */
+}
