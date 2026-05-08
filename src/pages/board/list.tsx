@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import "../../css/board.css";
 import { useEffect, useState } from "react";
 import { api } from "../../utils/api";
@@ -11,7 +11,10 @@ export default function List() {
     content: string;
     created_at: Date;
   };
-  
+
+  const [ searchParams ] = useSearchParams(); // URL파라미터
+  const navigate = useNavigate();
+
   const [currentPage, setCurrentPage] = useState(1); //페이지
   const [totalPages, setTotalPages] = useState(1); //총페이지
   const [posts, setPosts] = useState<Board[]>([]); // 리스트
@@ -26,14 +29,10 @@ export default function List() {
   };
   
   // 목록 조회
-  const fetchPosts = async (page = 1) => {
+  const fetchPosts = async (searchData: any) => {
     try{
       const res = await api.get(`/api/board`,{
-        params:{
-         page: page,
-         sType: sType,
-         sText: sText
-        }
+        params: searchData
       });
 
       setPosts(res.data.data);
@@ -52,15 +51,40 @@ export default function List() {
   };
   
   useEffect(() => {
-    fetchPosts(currentPage);
-  }, [currentPage]);
+    const params = Object.fromEntries(searchParams.entries());
+    const searchData = {
+      page: params.page || '1',
+      sType: params.sType || 'all',
+      sText: params.sText || '',
+    }
+
+    setSText(searchData.sText);
+    setSType(searchData.sType);
+    setCurrentPage(Number(searchData.page));
+
+    fetchPosts(searchData);
+
+  }, [searchParams]);
 
   //검색버튼
   const onSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setCurrentPage(1);
-    fetchPosts(1);
+
+    const queryString = new URLSearchParams({
+      page: '1',
+      sType: sType,
+      sText: sText
+    }).toString();
+    
+    navigate(`/boardList?${queryString}`);
   };
+
+  // 페이징버튼
+  const onPageing = (newPage: Number) => {
+    const newParams = new URLSearchParams(window.location.search);
+    newParams.set("page", newPage.toString());
+    navigate(`/boardList?${newParams}`);
+  }
     
   return (
     <div className="board-list-wrap">
@@ -82,7 +106,7 @@ export default function List() {
 
         {posts.map((post) => (
           <div key={post.id} className="board-row">
-            <Link to={`/BoardView/${post.id}`}>
+            <Link to={`/BoardView/${post.id}?${searchParams.toString()}`}>
               <div className="board-row-title">{post.title}</div>
             </Link>
             <div className="board-row-date">{post.created_at.toString().slice(0,10)}</div>
@@ -94,19 +118,19 @@ export default function List() {
       <div className="pagination">
         <button className="page-button"
           disabled={currentPage === 1}
-          onClick={() => setCurrentPage(prev => prev - 1 )}
+          onClick={() => onPageing(currentPage - 1 )}
         >&lt;</button>
         {[...Array(totalPages)].map((_, i) => (
           <button 
             key={i + 1}
-            onClick={() => setCurrentPage(i + 1)}
+            onClick={() => onPageing(i + 1)}
             className={`page-button ${currentPage === i + 1 ? 'active' : ''}`}
 
           >{i + 1}</button>
         ))}
         <button className="page-button"
           disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage(prev => prev + 1 )}
+          onClick={() => onPageing(currentPage + 1 )}
         >&gt;</button>
       </div>
 
