@@ -28,6 +28,7 @@ export default function Layout() {
               <div><Link to="/Login">로그인하기</Link></div>
             )}
             <div><Link to="/BoardList">게시판으로</Link></div>
+            <div><Link to="/Props">Props</Link></div>
           </div>
         </aside>
 

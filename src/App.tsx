@@ -10,6 +10,7 @@ import BoardEdit from "./pages/board/edit";
 import Login from "./pages/member/login";
 import Join from "./pages/member/join";
 import AuthGuard from './store/useAuthPage';
+import Props from './pages/props';
 
 export default function App() {
   return (
@@ -29,6 +30,10 @@ export default function App() {
             <Route path="/BoardEdit/:id" element={<BoardEdit />} />
             <Route path="/BoardList" element={<BoardList />} />
           </Route>
+        </Route>
+
+        <Route element={<Layout />}>
+        <Route path="/Props" element={<Props />} />
         </Route>
 
       </Routes>
