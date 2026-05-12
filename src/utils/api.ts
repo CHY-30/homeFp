@@ -1,7 +1,7 @@
 import axios from 'axios';
 import useAuthStore from '../store/useAuthStore'; //zustAnd
 
-const baseURL = 'http://localhost:3001';
+const baseURL = import.meta.env.VITE_API_URL;
 
 //비로그인접속
 export const freeApi = axios.create({
