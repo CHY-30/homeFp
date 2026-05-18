@@ -51,7 +51,6 @@ export default function List() {
   };
 
   const searchString = searchParams.toString();
-  
   useEffect(() => {
     const params = Object.fromEntries(searchParams.entries());
     const searchData = {
@@ -65,7 +64,6 @@ export default function List() {
     setCurrentPage(Number(searchData.page));
 
     fetchPosts(searchData);
-
   }, [searchString]);
 
   //검색버튼
