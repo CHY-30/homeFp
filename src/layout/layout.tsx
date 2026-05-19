@@ -2,6 +2,25 @@ import { Outlet, Link } from "react-router-dom";
 import useAuthStore from "../store/useAuthStore";
 import { useAuthLogOut } from "../store/useAuthLogOut";
 
+const getRemainingTime = () => {
+  const expireTime = sessionStorage.getItem('tokenExpireTime');
+  if (!expireTime) return "로그인 필요";
+
+  // 만료 시간에서 현재 시간을 뺌 (밀리초 단위 계산)
+  const remainMs = parseInt(expireTime) - Date.now();
+
+  if (remainMs <= 0) {
+    return "만료됨";
+  }
+
+  // 분과 초로 환산
+  const totalSeconds = Math.floor(remainMs / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  return `${minutes}분 ${seconds}초 남음`;
+};
+
 export default function Layout() {
 
   const { userId, userName, isLoggedIn } = useAuthStore();
@@ -22,6 +41,7 @@ export default function Layout() {
             {isLoggedIn === 1 ? (
               <>
               <div>{userName}({userId})</div>
+              <div>{getRemainingTime()}</div>
               <div onClick={pageLogOut} style={{ cursor: 'pointer' }}>로그아웃하기</div>
               </>
             ) : (

@@ -53,6 +53,10 @@ api.interceptors.response.use(
         const { userMidx, userId, userName, newaccessToken, newrefreshToken } = res.data;
 
         useAuthStore.getState().login(userMidx, userId, userName, newaccessToken, newrefreshToken);
+        
+        //로그인 남은 시간
+        const expireTime = Date.now() + (20 * 60 * 1000);
+        sessionStorage.setItem('tokenExpireTime', expireTime.toString());
 
         originRequest.headers.Authorization = `Bearer ${newaccessToken}`;
 

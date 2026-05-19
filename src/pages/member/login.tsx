@@ -35,6 +35,11 @@ export default function Login() {
       else{
         const { userMidx, userId, userName, accessToken, refreshToken } = rs.data;
         login(userMidx, userId, userName, accessToken, refreshToken);
+        
+        //로그인 남은 시간
+        const expireTime = Date.now() + (20 * 60 * 1000);
+        sessionStorage.setItem('tokenExpireTime', expireTime.toString());
+
         navigate('/');
       }
     } catch (err: any) {
