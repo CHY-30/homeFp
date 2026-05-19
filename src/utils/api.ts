@@ -1,7 +1,6 @@
 import axios from 'axios';
 import useAuthStore from '../store/useAuthStore'; //zustAnd
 
-let cntcnt = 0;
 const baseURL = import.meta.env.VITE_API_URL;
 
 //비로그인접속
