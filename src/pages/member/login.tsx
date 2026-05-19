@@ -33,8 +33,8 @@ export default function Login() {
         logout();
       }
       else{
-        const { userMidx, userId, userName, accessToken } = rs.data;
-        login(userMidx, userId, userName, accessToken);
+        const { userMidx, userId, userName, accessToken, refreshToken } = rs.data;
+        login(userMidx, userId, userName, accessToken, refreshToken);
         navigate('/');
       }
     } catch (err: any) {
