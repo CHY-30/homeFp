@@ -21,6 +21,7 @@ const getRemainingTime = () => {
   return `${minutes}분 ${seconds}초 남음`;
 };
 
+
 export default function Layout() {
 
   const { userId, userName, isLoggedIn } = useAuthStore();
@@ -49,6 +50,7 @@ export default function Layout() {
             )}
             <div><Link to="/BoardList">게시판으로</Link></div>
             <div><Link to="/Props">Props</Link></div>
+            <div><Link to="/GongsilList">공실게시판</Link></div>
           </div>
         </aside>
 
