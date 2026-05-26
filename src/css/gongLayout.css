@@ -35,13 +35,47 @@
     flex-direction: column;
     align-items: center;
     gap: 15px;
-    overflow-y: auto; /* 내용이 길어지면 이 안에서만 스크롤 */
+    overflow-y: auto;
+    border-right:1px solid #000000
   }
   
   /* 5. 우측 메인/상세 영역: 남은 공간 전체 차지 */
   .main-section {
     flex: 1; /* 좌측 100px을 제외한 나머지 가로 공간을 100% 채움 */
     background-color: #ffffff;
-    padding: 20px;
     overflow-y: auto; /* 내용이 길어지면 이 안에서만 스크롤 */
+  }
+  
+  .list-container{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  .list-listManin {
+    width: 350px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    border-right:1px solid #000000;
+    padding:0px;
+  }
+  
+  .list-listView {
+    flex: 1;
+    overflow-y: auto;
+    padding:0px;
+  }
+
+  .list-Div{
+    padding: 10px;
+    border-top: 1px solid #000000;
+  }
+
+  .list-Div:hover {
+    background-color: #ffdddd;
+  }
+
+  .list-Div.selected {
+    background-color: #d2ebff;
   }
