@@ -26,7 +26,7 @@ export default function ListMain({onClickBoardIdx, boardIdx}:ListMainType) {
     }
 
     const {ref, inView} = useInView(); //하단 스크롤 감지용
-    const [keyword, setKeyword] = useState("");
+    //const [keyword, setKeyword] = useState("");
     const [categoryType, setCategoryType] = useState("NONE");
     const [popularType, setPopularType] = useState("NONE");
     const [authorId, setAuthorId] = useState(0);
@@ -38,13 +38,13 @@ export default function ListMain({onClickBoardIdx, boardIdx}:ListMainType) {
         isFetchingNextPage, // 다음페이지 로딩 중 상태
         status,
     } = useInfiniteQuery<PostListResponse>({
-        queryKey: ['gongsilList', keyword, categoryType, popularType, authorId],
+        queryKey: ['gongsilList', categoryType, popularType, authorId],
         queryFn: async ({ pageParam = 0 }) =>{
             const rs = await apiGongsil.get('/api/community/posts/search/list',{
                 params: {
                     page: pageParam,
                     count: 5,
-                    ...(keyword && keyword !=='' && { keyword }),
+                    //...(keyword && keyword !=='' && { keyword }),
                     ...(categoryType && categoryType !=='NONE' && { categoryType }),
                     ...(popularType && popularType !=='NONE' && { popularType }),
                     ...(authorId && authorId !==0 && { authorId })
