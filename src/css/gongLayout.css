@@ -56,9 +56,12 @@
   .list-listManin {
     width: 350px;
     flex-shrink: 0;
-    overflow-y: auto;
     border-right:1px solid #000000;
     padding:0px;
+
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
   
   .list-listView {
@@ -79,3 +82,37 @@
   .list-Div.selected {
     background-color: #d2ebff;
   }
+
+  .list-Div2{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .view-Null{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #000000;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .total-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: hidden;
+    width: "100%";
+  }
+  .search-area {
+    flex: none;
+  }
+  .list-area {
+    flex: 1;
+    overflow-y: auto;
+  }
+

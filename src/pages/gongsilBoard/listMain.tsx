@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import "../../css/gongLayout.css"
 import { apiGongsil } from "../../utils/apiGongsil"
+import { useInView } from "react-intersection-observer";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 interface ListMainType{
     onClickBoardIdx: (id: number) => void;    
@@ -9,71 +11,120 @@ interface ListMainType{
 }
 
 export default function ListMain({onClickBoardIdx, boardIdx}:ListMainType) {
-    
-    interface searchDate{
-        page: number;
-        count: number;
-        keyword: string;
-        categoryType: string;
-        popularType: string;
-        authorId: number;    
-    }
 
     interface board{
         id: number;
         title: string;
         communityCategoryType: string;
+        images?: {smallUrl: string}[];
     }
-    
-    const [lists, setLists] = useState<board[]>([]); // 리스트
 
-    const listGongsil = async () => {
-        try{
-            const rs = await apiGongsil.get(`/api/community/posts/search/list`, {
-                    params:{
-                        dto:{
-                            page: 0,
-                            count: 20,
-                            keyword: "",
-                            categoryType: "NONE",
-                            popularType: "NONE",
-                            authorId: 0
-                        }
-                    }
+    interface PostListResponse {
+        items: board[];
+        currentPageIndex: number;
+        hasNext: boolean; // 마지막 페이지 여부
+    }
+
+    const {ref, inView} = useInView(); //하단 스크롤 감지용
+    const [keyword, setKeyword] = useState("");
+    const [categoryType, setCategoryType] = useState("NONE");
+    const [popularType, setPopularType] = useState("NONE");
+    const [authorId, setAuthorId] = useState(0);
+
+    const {
+        data,
+        fetchNextPage, // 다음페이지 트리거
+        hasNextPage, // 다음페이지 여부
+        isFetchingNextPage, // 다음페이지 로딩 중 상태
+        status,
+    } = useInfiniteQuery<PostListResponse>({
+        queryKey: ['gongsilList', keyword, categoryType, popularType, authorId],
+        queryFn: async ({ pageParam = 0 }) =>{
+            const rs = await apiGongsil.get('/api/community/posts/search/list',{
+                params: {
+                    page: pageParam,
+                    count: 5,
+                    ...(keyword && keyword !=='' && { keyword }),
+                    ...(categoryType && categoryType !=='NONE' && { categoryType }),
+                    ...(popularType && popularType !=='NONE' && { popularType }),
+                    ...(authorId && authorId !==0 && { authorId })
                 }
-            );
-
-            console.log("서버 응답 데이터:", rs.data);
-
-            setLists(rs.data.result.items);
-        }
-        catch(err: any){
-            alert("오류");
-        }
-    }
+            });
+            return rs.data.result;
+        },
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) => {
+            return lastPage.hasNext ? lastPage.currentPageIndex + 1 : undefined;
+        },
+    });
 
     useEffect(() => {
-        listGongsil();
-    },[]);
+       if (inView && hasNextPage && !isFetchingNextPage){
+           fetchNextPage();
+       }
+    },[inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+    if (status === 'pending') return <div>로딩 중...</div>;
+    if (status === 'error') return <div>에러 발생</div>;
 
     return(
-        <div style={{width:'100%', padding:'0px'}}>
-            <div>
-                검색공간입니다.
+        <div className="total-container"> 
+            <div className="search-area">
+                <div>
+                    <button onClick={() => { setPopularType("NONE"); setAuthorId(0);} } style={{backgroundColor: popularType === "NONE" && authorId === 0  ? "#cdc5ff" : ""}}>전체</button>
+                    <button onClick={() => { setPopularType("일간"); setAuthorId(0); setCategoryType("NONE");} } style={{backgroundColor: popularType !== "NONE" && authorId === 0 ? "#cdc5ff" : ""}}>인기순</button>
+                    <button onClick={() => { setPopularType("NONE"); setAuthorId(84); setCategoryType("NONE");} } style={{backgroundColor: authorId !== 0 ? "#cdc5ff" : ""}}>내가 쓴 글</button>
+                </div>
+                {popularType === "NONE" && authorId === 0 && (
+                <div>
+                    <button onClick={() => setCategoryType("NONE")} style={{backgroundColor: categoryType === "NONE" ? "#cdc5ff" : ""}}>전체</button>
+                    <button onClick={() => setCategoryType("일반")} style={{backgroundColor: categoryType === "일반" ? "#cdc5ff" : ""}}>일반</button>
+                    <button onClick={() => setCategoryType("익명")} style={{backgroundColor: categoryType === "익명" ? "#cdc5ff" : ""}}>익명</button>
+                    <button onClick={() => setCategoryType("구인_구직")} style={{backgroundColor: categoryType === "구인_구직" ? "#cdc5ff" : ""}}>구인구직</button>
+                    <button onClick={() => setCategoryType("중개사무소")} style={{backgroundColor: categoryType === "중개사무소" ? "#cdc5ff" : ""}}>중개사무소 양도양수</button>
+                </div>
+                )}
+                {popularType !== "NONE" && authorId === 0 && (
+                <div>
+                    <button onClick={() => setPopularType("일간")} style={{backgroundColor: popularType === "일간" ? "#cdc5ff" : ""}}>오늘</button>
+                    <button onClick={() => setPopularType("주간")} style={{backgroundColor: popularType === "주간" ? "#cdc5ff" : ""}}>주간</button>
+                    <button onClick={() => setPopularType("월간")} style={{backgroundColor: popularType === "월간" ? "#cdc5ff" : ""}}>월간</button>
+                    <button onClick={() => setPopularType("전체")} style={{backgroundColor: popularType === "전체" ? "#cdc5ff" : ""}}>전체</button>
+                </div>
+                )}
             </div>
-            {lists.map((list) => {
-                const isSelected = boardIdx === list.id;
 
-                return(
-                    <div 
-                        key={list.id} 
-                        onClick={() => onClickBoardIdx(list.id)}
-                        className={`list-Div ${isSelected ? 'selected' : ''}`}
-                    >
-                        <div>({list.communityCategoryType}) {list.title}</div>
-                    </div>
-                )
-            })}
+            <div className="list-area">
+            {data?.pages.map((lists) => (
+                lists.items.map((list) => {
+                    const isSelected = boardIdx === list.id;
+                    const isSmallImage = list.images && list.images.length > 0 ? list.images[0].smallUrl : null;
+                    return(
+                        <div 
+                            key={list.id} 
+                            onClick={() => onClickBoardIdx(list.id)}
+                            className={`list-Div ${isSelected ? 'selected' : ''}`}
+                        >
+                            <div className="list-Div2">
+                                ({list.communityCategoryType})  
+                                {" "}
+                                {list.title} 
+                                {isSmallImage && <img src={isSmallImage}></img>}
+                            </div>
+                        </div>
+                    );
+                })
+            ))}
+
+            <div ref={ref} style={{ height: '0px', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#aaa', borderBottom:'1px solid #000000'}}>
+                {isFetchingNextPage 
+                    ? '' 
+                    : hasNextPage 
+                        ? '스크롤하면 더 보기' 
+                        : ''}
+            </div>
+            </div>
+
         </div>
     );
 }
