@@ -116,3 +116,16 @@
     overflow-y: auto;
   }
 
+  .search-btn{
+    position: absolute;
+    right: 20px;
+    top: 45%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    font-Size: 16px;
+    padding: 0;
+    z-index: 10;
+  }

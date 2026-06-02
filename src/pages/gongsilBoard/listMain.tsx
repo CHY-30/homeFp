@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../../css/gongLayout.css"
 import { apiGongsil } from "../../utils/apiGongsil"
 import { useInView } from "react-intersection-observer";
@@ -26,7 +26,8 @@ export default function ListMain({onClickBoardIdx, boardIdx}:ListMainType) {
     }
 
     const {ref, inView} = useInView(); //하단 스크롤 감지용
-    //const [keyword, setKeyword] = useState("");
+    const keywordRef = useRef<HTMLInputElement>(null);
+    const [keyword, setKeyword] = useState("");
     const [categoryType, setCategoryType] = useState("NONE");
     const [popularType, setPopularType] = useState("NONE");
     const [authorId, setAuthorId] = useState(0);
@@ -38,13 +39,13 @@ export default function ListMain({onClickBoardIdx, boardIdx}:ListMainType) {
         isFetchingNextPage, // 다음페이지 로딩 중 상태
         status,
     } = useInfiniteQuery<PostListResponse>({
-        queryKey: ['gongsilList', categoryType, popularType, authorId],
+        queryKey: ['gongsilList', keyword, categoryType, popularType, authorId],
         queryFn: async ({ pageParam = 0 }) =>{
             const rs = await apiGongsil.get('/api/community/posts/search/list',{
                 params: {
                     page: pageParam,
                     count: 20,
-                    //...(keyword && keyword !=='' && { keyword }),
+                    ...(keyword && keyword !=='' && { keyword }),
                     ...(categoryType && categoryType !=='NONE' && { categoryType }),
                     ...(popularType && popularType !=='NONE' && { popularType }),
                     ...(authorId && authorId !==0 && { authorId })
@@ -67,10 +68,36 @@ export default function ListMain({onClickBoardIdx, boardIdx}:ListMainType) {
     if (status === 'pending') return <div></div>; //로딩 중...
     if (status === 'error') return <div>에러 발생</div>;
 
+    const handleClear = () => {
+        if (keywordRef.current) {
+            keywordRef.current.value = ''; 
+        }
+        setKeyword('');
+        keywordRef.current?.focus(); 
+    };
+
+
     return(
         <div className="total-container"> 
             <div className="search-area">
-                <div style={{padding:'10px'}}>
+                <div style={{position: 'relative', padding:'10px'}}>
+                <input 
+                    type="text"
+                    ref={keywordRef}
+                    defaultValue={keyword}
+                    placeholder="검색어를 입력하세요" 
+                    style={{width:'100%', padding:'8px 35px 8px 12px', boxSizing: 'border-box'}}
+                    onKeyDown={(e) => e.key === 'Enter' && setKeyword(keywordRef.current?.value || '')}
+                />
+                <button
+                    type="button"
+                    onClick={handleClear}
+                    className="search-btn"
+                >
+                ✕
+                </button>
+                </div>
+                <div style={{borderTop:'1px solid #000000', padding:'10px'}}>
                     <button onClick={() => { setPopularType("NONE"); setAuthorId(0);} } style={{backgroundColor: popularType === "NONE" && authorId === 0  ? "#cdc5ff" : ""}}>전체</button>
                     <button onClick={() => { setPopularType("일간"); setAuthorId(0); setCategoryType("NONE");} } style={{backgroundColor: popularType !== "NONE" && authorId === 0 ? "#cdc5ff" : ""}}>인기순</button>
                     <button onClick={() => { setPopularType("NONE"); setAuthorId(84); setCategoryType("NONE");} } style={{backgroundColor: authorId !== 0 ? "#cdc5ff" : ""}}>내가 쓴 글</button>
