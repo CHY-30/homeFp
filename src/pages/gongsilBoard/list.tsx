@@ -16,6 +16,10 @@ export default function List() {
                 ></ListMain>
             </div>
             <div className="list-listView">
+                {/* 상단 바 (100px 고정) */}
+                <div className="header-section">
+                    <h2>위</h2>
+                </div>
                 <ListView
                     boardIdx={boardIdx}//클릭한 고유번호
                 ></ListView>

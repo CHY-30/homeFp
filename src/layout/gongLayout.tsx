@@ -8,11 +8,7 @@ export default function GongLayout() {
     // 최외곽 전체 틀
     <div className="layout-container">
       
-      {/* 상단 바 (100px 고정) */}
-      <div className="header-section">
-        <h2>위</h2>
-      </div>
-
+      
       {/* 하단 본문 영역 (좌우 분할) */}
       <div className="body-container">
         
