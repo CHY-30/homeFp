@@ -139,7 +139,7 @@ export default function ListMain({onClickBoardIdx, boardIdx}:ListMainType) {
                                     ({list.communityCategoryType})  
                                     {" "}
                                     {list.title} 
-                                    {isSmallImage && <img src={isSmallImage}></img>}
+                                    {isSmallImage && <img src={isSmallImage} style={{width:'80px',height:'80px'}}></img>}
                                 </div>
                             </div>
                         );
