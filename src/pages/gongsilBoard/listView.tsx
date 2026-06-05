@@ -29,7 +29,7 @@ export default function ListView({boardIdx}: ListViewType) {
         const fetchData = async () => {
           try {
             const res = await apiGongsil.get(`/api/community/posts/${boardIdx}`);
-            console.log(res.data);
+            //console.log(res.data);
             setViewData(res.data.result);
           } catch (err) {
             alert("데이터 불러오기 실패");
@@ -56,12 +56,12 @@ export default function ListView({boardIdx}: ListViewType) {
                 {viewData?.communityCategoryType === '익명' ? (
                     <>
                     {viewData?.authorNickName}<br/>
-                    {viewData?.createdAt?.substring(0,10)}
+                    {viewData?.createdAt.substring(0,10)}
                     </>
                 ) : (
                     <>
                     {viewData?.authorName}({viewData?.agencyName})<br/>
-                    {viewData?.createdAt?.substring(0,10)}
+                    {viewData?.createdAt.substring(0,10)}
                     </>
                 )}
             </div>
