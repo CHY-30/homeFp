@@ -3,13 +3,15 @@ import "../../css/gongLayout.css"
 import { apiGongsil } from "../../utils/apiGongsil"
 
 interface ListViewType{
+    onClickBoardIdx: (bId?: number | null) => void;  
+    onClickBoardMode: (nextMode: string) => void;  
     boardIdx: number | null;    
 }
 
-export default function ListView({boardIdx}: ListViewType) {
+export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: ListViewType) {
 
     interface gongsilView{
-        id: number; // 고유번호
+        id: number; // 게시글고유번호
         title: string; // 제목
         content: string; // 상세내용
         images?: {url: string}[]; // 이미지
@@ -18,6 +20,7 @@ export default function ListView({boardIdx}: ListViewType) {
         authorName: string; //작성명
         agencyName: string; //업체명
         authorNickName: string; //익명닉네임
+        authorId: number; //회원고유번호
     }
 
     const [viewData, setViewData] = useState<gongsilView>(); //내용
@@ -29,7 +32,7 @@ export default function ListView({boardIdx}: ListViewType) {
         const fetchData = async () => {
           try {
             const res = await apiGongsil.get(`/api/community/posts/${boardIdx}`);
-            //console.log(res.data);
+            console.log(res.data);
             setViewData(res.data.result);
           } catch (err) {
             alert("데이터 불러오기 실패");
@@ -66,7 +69,7 @@ export default function ListView({boardIdx}: ListViewType) {
                 )}
             </div>
             <div style={{padding:'20px',borderBottom:'1px solid #000000',whiteSpace: 'pre-wrap'}}>
-                {viewData?.content})<br/>
+                {viewData?.content}<br/>
                 {viewData?.images?.map((imgUrl, index) => {
                     return(
                         <img
@@ -76,6 +79,13 @@ export default function ListView({boardIdx}: ListViewType) {
                         />
                     );
                 })}
+            </div>
+            <div style={{padding:'20px',borderBottom:'1px solid #000000',whiteSpace: 'pre-wrap'}}>
+                <button onClick={() => {onClickBoardMode("RESET"); onClickBoardIdx(null);}}>뒤로가기</button>
+                {'   '}
+                {viewData?.authorId === 84 ?(
+                  <button>수정하기</button>
+                ):""}
             </div>
         </div>
     );

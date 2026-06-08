@@ -5,11 +5,12 @@ import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 interface ListMainType{
-    onClickBoardIdx: (nextMode: string ,bId?: number | null) => void;  
+    onClickBoardIdx: (bId?: number | null) => void;  
+    onClickBoardMode: (nextMode: string) => void;  
     boardIdx: number | null;
 }
 
-export default function ListMain({onClickBoardIdx, boardIdx}:ListMainType) {
+export default function ListMain({onClickBoardMode, onClickBoardIdx, boardIdx}:ListMainType) {
 
     interface board{
         id: number;
@@ -101,7 +102,7 @@ export default function ListMain({onClickBoardIdx, boardIdx}:ListMainType) {
                     <button onClick={() => { setPopularType("일간"); setAuthorId(0); setCategoryType("NONE");} } style={{backgroundColor: popularType !== "NONE" && authorId === 0 ? "#cdc5ff" : ""}}>인기순</button>
                     <button onClick={() => { setPopularType("NONE"); setAuthorId(84); setCategoryType("NONE");} } style={{backgroundColor: authorId !== 0 ? "#cdc5ff" : ""}}>내가 쓴 글</button>
                     {"            "}
-                    <button onClick={() => { onClickBoardIdx("WRITE");} }>글쓰기</button>
+                    <button onClick={() => {onClickBoardMode("WRITE");} }>글쓰기</button>
                 </div>
                 {popularType === "NONE" && authorId === 0 && (
                 <div style={{borderTop:'1px solid #000000',padding:'10px'}}>
@@ -133,7 +134,7 @@ export default function ListMain({onClickBoardIdx, boardIdx}:ListMainType) {
                         return(
                             <div 
                                 key={list.id} 
-                                onClick={() => {onClickBoardIdx("VIEW", list.id);}}
+                                onClick={() => {onClickBoardMode("VIEW"); onClickBoardIdx(list.id);}}
                                 className={`list-Div ${isSelected ? 'selected' : ''}`}
                             >
                                 <div className="list-Div2">

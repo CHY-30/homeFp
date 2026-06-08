@@ -4,10 +4,12 @@ import { apiGongsil } from "../../utils/apiGongsil"
 import { useForm } from "react-hook-form";
 
 interface ListViewType{
+    onClickBoardIdx: (bId?: number | null) => void;  
+    onClickBoardMode: (nextMode: string) => void;  
     boardIdx: number | null;    
 }
 
-export default function ListView({boardIdx}: ListViewType) {
+export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: ListViewType) {
 
     interface gongsilEdit{
         id: number; // 고유번호
@@ -56,11 +58,21 @@ export default function ListView({boardIdx}: ListViewType) {
     const currentCategory = watch('communityCategoryType');
 
     const onsubmit = async (data: gongsilEdit) =>{
+
         const confirmLeave = window.confirm(
             "등록하시겠습니까?"
         );
         if (!confirmLeave) {
             return; 
+        }
+
+        try {
+            await apiGongsil.post('/api/community/posts', data);
+            alert('글쓰기 완료');
+            onClickBoardMode('RESET');
+            onClickBoardIdx(null);
+        } catch (err: any) {
+            alert(err.response.status+'_'+err.message);
         }
     }
 
