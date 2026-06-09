@@ -81,10 +81,10 @@ export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: 
                 })}
             </div>
             <div style={{padding:'20px',borderBottom:'1px solid #000000',whiteSpace: 'pre-wrap'}}>
-                <button onClick={() => {onClickBoardMode("RESET"); onClickBoardIdx(null);}}>뒤로가기</button>
+                <button onClick={() => {onClickBoardMode("VIEW"); onClickBoardIdx(null);}}>뒤로가기</button>
                 {'   '}
-                {viewData?.authorId === 84 ?(
-                  <button>수정하기</button>
+                {viewData?.authorId === 84 || viewData?.authorNickName === 'DH58401' ?(
+                  <button onClick={() => {onClickBoardMode("EDIT"); onClickBoardIdx(boardIdx);}}>수정하기</button>
                 ):""}
             </div>
         </div>

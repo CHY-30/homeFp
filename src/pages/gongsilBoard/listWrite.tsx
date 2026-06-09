@@ -24,7 +24,7 @@ export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: 
     }
 
     const communityCategoryTypeWrite = ['일반', '익명', '구인_구직', '중개사무소']
-    const [editData, setEditData] = useState<gongsilEdit>(); //내용
+    //const [editData, setEditData] = useState<gongsilEdit>(); //내용
 
     useEffect(() => {
 
@@ -32,8 +32,11 @@ export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: 
         const fetchData = async () => {
           try {
             const res = await apiGongsil.get(`/api/community/posts/${boardIdx}`);
-            //console.log(res.data);
-            setEditData(res.data.result);
+            //setEditData(res.data.result);
+            const modData = res.data.result
+            setValue("communityCategoryType", modData.communityCategoryType);
+            setValue("title", modData.title);
+            setValue("content", modData.content);
           } catch (err) {
             alert("데이터 불러오기 실패");
           }
@@ -59,20 +62,43 @@ export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: 
 
     const onsubmit = async (data: gongsilEdit) =>{
 
-        const confirmLeave = window.confirm(
-            "등록하시겠습니까?"
-        );
-        if (!confirmLeave) {
-            return; 
-        }
+        if(boardIdx === null){
 
-        try {
-            await apiGongsil.post('/api/community/posts', data);
-            alert('글쓰기 완료');
-            onClickBoardMode('RESET');
-            onClickBoardIdx(null);
-        } catch (err: any) {
-            alert(err.response.status+'_'+err.message);
+            const confirmLeave = window.confirm(
+                "등록하시겠습니까?"
+            );
+            if (!confirmLeave) {
+                return; 
+            }
+
+            try {
+                await apiGongsil.post('/api/community/posts', data);
+                //alert('글쓰기 완료');
+                onClickBoardMode('RESET');
+                onClickBoardIdx(null);
+            } catch (err: any) {
+                alert(err.response.status+'_'+err.message);
+            }
+
+        }
+        else{
+
+            const confirmLeave = window.confirm(
+                "수정하시겠습니까?"
+            );
+            if (!confirmLeave) {
+                return; 
+            }
+
+            try {
+                await apiGongsil.patch(`/api/community/posts/${boardIdx}`, data);
+                //alert('수정 완료');
+                onClickBoardMode('RESET');
+                onClickBoardIdx(null);
+            } catch (err: any) {
+                alert(err.response.status+'_'+err.message);
+            }
+
         }
     }
 
@@ -84,6 +110,14 @@ export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: 
                 <input type='hidden' {...register('communityCategoryType', { required: true })}></input>
                 {communityCategoryTypeWrite.map((category) =>{
                     const isCheckCCT = currentCategory === category;
+
+                    if (boardIdx && currentCategory === '익명'){
+                        if(category !== '익명') return null;
+                    }
+                    else{
+                        if(category === '익명') return null;
+                    }
+                    
                     return(
                         <button
                             key={category}
@@ -117,6 +151,8 @@ export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: 
                 {errors.content && <p style={{ color: 'red', fontSize: '12px' }}>{errors.content.message}</p>}
             </div>
             <div style={{padding:'20px',borderBottom:'1px solid #000000',whiteSpace: 'pre-wrap'}}>
+                <button type="button" onClick={() => {onClickBoardMode("VIEW"); onClickBoardIdx(null);}}>뒤로가기</button>
+                {'   '}
                 <button type="submit">
                     {boardIdx ? '수정완료' : '등록하기'}
                 </button>
