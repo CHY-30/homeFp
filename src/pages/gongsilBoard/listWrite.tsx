@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "../../css/gongLayout.css"
 import { apiGongsil } from "../../utils/apiGongsil"
 import { useForm } from "react-hook-form";
@@ -77,7 +77,7 @@ export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: 
                 onClickBoardMode('RESET');
                 onClickBoardIdx(null);
             } catch (err: any) {
-                alert(err.response.status+'_'+err.message);
+                alert(err.response.data.message);
             }
 
         }
@@ -94,9 +94,9 @@ export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: 
                 await apiGongsil.patch(`/api/community/posts/${boardIdx}`, data);
                 //alert('수정 완료');
                 onClickBoardMode('RESET');
-                onClickBoardIdx(null);
+                onClickBoardIdx(boardIdx);
             } catch (err: any) {
-                alert(err.response.status+'_'+err.message);
+                alert(err.response.data.message);
             }
 
         }
@@ -110,14 +110,16 @@ export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: 
                 <input type='hidden' {...register('communityCategoryType', { required: true })}></input>
                 {communityCategoryTypeWrite.map((category) =>{
                     const isCheckCCT = currentCategory === category;
-
-                    if (boardIdx && currentCategory === '익명'){
-                        if(category !== '익명') return null;
-                    }
-                    else{
-                        if(category === '익명') return null;
-                    }
                     
+                    if(boardIdx){
+                        if (currentCategory === '익명'){
+                            if(category !== '익명') return null;
+                        }
+                        else{
+                            if(category === '익명') return null;
+                        }
+                    }
+
                     return(
                         <button
                             key={category}
@@ -154,7 +156,7 @@ export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: 
                 <button type="button" onClick={() => {onClickBoardMode("VIEW"); onClickBoardIdx(null);}}>뒤로가기</button>
                 {'   '}
                 <button type="submit">
-                    {boardIdx ? '수정완료' : '등록하기'}
+                    {boardIdx ? '수정하기' : '등록하기'}
                 </button>
             </div>
             </form>

@@ -34,15 +34,31 @@ export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: 
             const res = await apiGongsil.get(`/api/community/posts/${boardIdx}`);
             console.log(res.data);
             setViewData(res.data.result);
-          } catch (err) {
-            alert("데이터 불러오기 실패");
+          } catch (err: any) {
+            alert(err.response.data.message);
           }
         };
         
         fetchData();
-      }, [boardIdx]);
+    }, [boardIdx]);
 
+    const deleteData = async () => {
 
+        const confirmLeave = window.confirm(
+            "식제하시겠습니까?"
+        );
+        if (!confirmLeave) {
+            return; 
+        }
+
+        try {
+          await apiGongsil.delete(`/api/community/posts/${boardIdx}`);
+          onClickBoardMode('RESET');
+          onClickBoardIdx(null);
+        } catch (err: any) {
+          alert(err.response.data.message);
+        }
+    };
 
     if(boardIdx === null){
         return(
@@ -81,10 +97,14 @@ export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: 
                 })}
             </div>
             <div style={{padding:'20px',borderBottom:'1px solid #000000',whiteSpace: 'pre-wrap'}}>
-                <button onClick={() => {onClickBoardMode("VIEW"); onClickBoardIdx(null);}}>뒤로가기</button>
+                <button type="button" onClick={() => {onClickBoardMode("VIEW"); onClickBoardIdx(null);}}>뒤로가기</button>
                 {'   '}
-                {viewData?.authorId === 84 || viewData?.authorNickName === 'DH58401' ?(
-                  <button onClick={() => {onClickBoardMode("EDIT"); onClickBoardIdx(boardIdx);}}>수정하기</button>
+                    {viewData?.authorId === 84 || viewData?.authorNickName === 'DH58401' ?(
+                    <>
+                    <button onClick={() => {onClickBoardMode("EDIT"); onClickBoardIdx(boardIdx);}}>수정하기</button>
+                    {'   '}
+                    <button type="button" onClick={() => {deleteData();}}>삭제하기</button>
+                    </>
                 ):""}
             </div>
         </div>
