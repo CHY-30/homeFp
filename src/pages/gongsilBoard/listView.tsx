@@ -32,7 +32,7 @@ export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: 
         const fetchData = async () => {
           try {
             const res = await apiGongsil.get(`/api/community/posts/${boardIdx}`);
-            console.log(res.data);
+            //console.log(res.data);
             setViewData(res.data.result);
           } catch (err: any) {
             alert(err.response.data.message);
