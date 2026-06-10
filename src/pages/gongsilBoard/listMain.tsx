@@ -5,12 +5,11 @@ import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 interface ListMainType{
-    onClickBoardIdx: (bId?: number | null) => void;  
-    onClickBoardMode: (nextMode: string) => void;  
+    onClickBoardModeIdx: (nextMode: string, nextIdx: number | null) => void;
     boardIdx: number | null;
 }
 
-export default function ListMain({onClickBoardMode, onClickBoardIdx, boardIdx}:ListMainType) {
+export default function ListMain({onClickBoardModeIdx, boardIdx}:ListMainType) {
 
     interface board{
         id: number;
@@ -102,7 +101,7 @@ export default function ListMain({onClickBoardMode, onClickBoardIdx, boardIdx}:L
                     <button onClick={() => { setPopularType("일간"); setAuthorId(0); setCategoryType("NONE");} } style={{backgroundColor: popularType !== "NONE" && authorId === 0 ? "#cdc5ff" : ""}}>인기순</button>
                     <button onClick={() => { setPopularType("NONE"); setAuthorId(84); setCategoryType("NONE");} } style={{backgroundColor: authorId !== 0 ? "#cdc5ff" : ""}}>내가 쓴 글</button>
                     {"            "}
-                    <button onClick={() => {onClickBoardMode("WRITE"); onClickBoardIdx(null);} }>글쓰기</button>
+                    <button onClick={() => {onClickBoardModeIdx("WRITE",null);}}>글쓰기</button>
                 </div>
                 {popularType === "NONE" && authorId === 0 && (
                 <div style={{borderTop:'1px solid #000000',padding:'10px'}}>
@@ -134,7 +133,7 @@ export default function ListMain({onClickBoardMode, onClickBoardIdx, boardIdx}:L
                         return(
                             <div 
                                 key={list.id} 
-                                onClick={() => {onClickBoardMode("VIEW"); onClickBoardIdx(list.id);}}
+                                onClick={() => {onClickBoardModeIdx("VIEW", list.id);}}
                                 className={`list-Div ${isSelected ? 'selected' : ''}`}
                             >
                                 <div className="list-Div2">

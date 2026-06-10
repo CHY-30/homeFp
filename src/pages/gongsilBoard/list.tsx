@@ -11,7 +11,7 @@ export default function List() {
     const [boardMode, setBoardMode] = useState<string | null>(null);
     const queryClient = useQueryClient();
 
-    const onClickBoardMode = (nextMode: string) => {  
+    const onClickBoardModeIdx = (nextMode: string, nextIdx: number | null) => {  
         if(boardMode === "WRITE" && nextMode !== "RESET" && nextMode !== "WRITE"){
             const confirmLeave = window.confirm(
                 "작성 중인 내용이 저장되지 않을 수 있습니다. 다른 페이지로 이동하시겠습니까?"
@@ -20,7 +20,7 @@ export default function List() {
                 return; 
             }
         }
-        if(boardMode === "EDIT" && nextMode !== "RESET" && nextMode !== "EDIT"){
+        if(boardMode === "EDIT" && nextMode !== "RESET"){
             const confirmLeave = window.confirm(
                 "수정 중인 내용이 저장되지 않을 수 있습니다. 다른 페이지로 이동하시겠습니까?"
             );
@@ -29,13 +29,11 @@ export default function List() {
             }
         }
         if(nextMode === "RESET"){
-            nextMode = "";
+            nextMode = "VIEW";
             queryClient.invalidateQueries({ queryKey: ['gongsilList'] });  
         }
         setBoardMode(nextMode);
-    }
-    const onClickBoardIdx = (bId: number | null = null) => {
-       setBoardIdx(bId)
+        setBoardIdx(nextIdx)
     }
 
     return(
@@ -43,8 +41,7 @@ export default function List() {
             <div className="list-listManin">
                 <ListMain
                     boardIdx={boardIdx}//클릭한 고유번호
-                    onClickBoardIdx={onClickBoardIdx} 
-                    onClickBoardMode={onClickBoardMode}
+                    onClickBoardModeIdx={onClickBoardModeIdx}
                 ></ListMain>
             </div>
             <div className="list-listView">
@@ -55,22 +52,19 @@ export default function List() {
                 {(boardMode === "VIEW" || !boardMode) && (
                     <ListView
                         boardIdx={boardIdx}//클릭한 고유번호
-                        onClickBoardIdx={onClickBoardIdx} 
-                        onClickBoardMode={onClickBoardMode}
+                        onClickBoardModeIdx={onClickBoardModeIdx}
                     ></ListView>
                 )}
                 {boardMode === "WRITE" && (
                     <ListWrite
                         boardIdx={null}//클릭한 고유번호
-                        onClickBoardIdx={onClickBoardIdx}
-                        onClickBoardMode={onClickBoardMode}
+                        onClickBoardModeIdx={onClickBoardModeIdx}
                     ></ListWrite>
                 )}
                 {boardMode === "EDIT" && (
                     <ListWrite
                         boardIdx={boardIdx}//클릭한 고유번호
-                        onClickBoardIdx={onClickBoardIdx}
-                        onClickBoardMode={onClickBoardMode}
+                        onClickBoardModeIdx={onClickBoardModeIdx}
                     ></ListWrite>
                 )}
             </div>

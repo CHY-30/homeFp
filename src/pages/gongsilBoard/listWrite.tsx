@@ -4,12 +4,11 @@ import { apiGongsil } from "../../utils/apiGongsil"
 import { useForm } from "react-hook-form";
 
 interface ListViewType{
-    onClickBoardIdx: (bId?: number | null) => void;  
-    onClickBoardMode: (nextMode: string) => void;  
+    onClickBoardModeIdx: (nextMode: string, nextIdx: number | null) => void;
     boardIdx: number | null;    
 }
 
-export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: ListViewType) {
+export default function ListView({onClickBoardModeIdx, boardIdx}: ListViewType) {
 
     interface gongsilEdit{
         id: number; // 고유번호
@@ -74,8 +73,7 @@ export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: 
             try {
                 await apiGongsil.post('/api/community/posts', data);
                 //alert('글쓰기 완료');
-                onClickBoardMode('RESET');
-                onClickBoardIdx(null);
+                onClickBoardModeIdx('RESET', null);
             } catch (err: any) {
                 alert(err.response.data.message);
             }
@@ -93,8 +91,7 @@ export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: 
             try {
                 await apiGongsil.patch(`/api/community/posts/${boardIdx}`, data);
                 //alert('수정 완료');
-                onClickBoardMode('RESET');
-                onClickBoardIdx(boardIdx);
+                onClickBoardModeIdx('RESET', boardIdx);
             } catch (err: any) {
                 alert(err.response.data.message);
             }
@@ -153,7 +150,7 @@ export default function ListView({onClickBoardIdx, onClickBoardMode, boardIdx}: 
                 {errors.content && <p style={{ color: 'red', fontSize: '12px' }}>{errors.content.message}</p>}
             </div>
             <div style={{padding:'20px',borderBottom:'1px solid #000000',whiteSpace: 'pre-wrap'}}>
-                <button type="button" onClick={() => {onClickBoardMode("VIEW"); onClickBoardIdx(null);}}>뒤로가기</button>
+                <button type="button" onClick={() => {onClickBoardModeIdx("VIEW", boardIdx);}}>뒤로가기</button>
                 {'   '}
                 <button type="submit">
                     {boardIdx ? '수정하기' : '등록하기'}
