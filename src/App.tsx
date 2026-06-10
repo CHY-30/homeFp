@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./css/common.css";
 import Layout from "./layout/layout";
+import GongsilLayout from "./layout/gongLayout";
 
 import Main from "./pages/main";
 import BoardList from "./pages/board/list";
@@ -11,6 +12,7 @@ import Login from "./pages/member/login";
 import Join from "./pages/member/join";
 import AuthGuard from './store/useAuthPage';
 import Props from './pages/props';
+import GongsilList from './pages/gongsilBoard/list';
 
 export default function App() {
   return (
@@ -32,8 +34,12 @@ export default function App() {
           </Route>
         </Route>
 
+        <Route element={<GongsilLayout />}>
+          <Route path="/GongsilList" element={<GongsilList />} />  
+        </Route>
+
         <Route element={<Layout />}>
-        <Route path="/Props" element={<Props />} />
+          <Route path="/Props" element={<Props />} />
         </Route>
 
       </Routes>

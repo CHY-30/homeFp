@@ -1,0 +1,110 @@
+import { useEffect, useState } from "react";
+import "../../css/gongLayout.css"
+import { apiGongsil } from "../../utils/apiGongsil"
+
+interface ListViewType{
+    onClickBoardModeIdx: (nextMode: string, nextIdx: number | null) => void;
+    boardIdx: number | null;    
+}
+
+export default function ListView({onClickBoardModeIdx, boardIdx}: ListViewType) {
+
+    interface gongsilView{
+        id: number; // 게시글고유번호
+        title: string; // 제목
+        content: string; // 상세내용
+        images?: {url: string}[]; // 이미지
+        createdAt: string; // 작성일
+        communityCategoryType: string; //타입
+        authorName: string; //작성명
+        agencyName: string; //업체명
+        authorNickName: string; //익명닉네임
+        authorId: number; //회원고유번호
+    }
+
+    const [viewData, setViewData] = useState<gongsilView>(); //내용
+
+    useEffect(() => {
+
+        if(boardIdx === null){return}// 없으면 부르지마
+
+        const fetchData = async () => {
+          try {
+            const res = await apiGongsil.get(`/api/community/posts/${boardIdx}`);
+            //console.log(res.data);
+            setViewData(res.data.result);
+          } catch (err: any) {
+            alert(err.response.data.message);
+          }
+        };
+        
+        fetchData();
+    }, [boardIdx]);
+
+    const deleteData = async () => {
+
+        const confirmLeave = window.confirm(
+            "식제하시겠습니까?"
+        );
+        if (!confirmLeave) {
+            return; 
+        }
+
+        try {
+          await apiGongsil.delete(`/api/community/posts/${boardIdx}`);
+          onClickBoardModeIdx('RESET', null);
+        } catch (err: any) {
+          alert(err.response.data.message);
+        }
+    };
+
+    if(boardIdx === null){
+        return(
+            <div className="view-Null">좌측에 글을 선택해주세요.</div>
+        )
+    }
+
+    return(
+        <div>
+            <div style={{padding:'20px',borderBottom:'1px solid #000000'}}>
+                [{viewData?.communityCategoryType}]{' '}{viewData?.title}
+            </div>
+            <div style={{padding:'20px',borderBottom:'1px solid #000000'}}>
+                {viewData?.communityCategoryType === '익명' ? (
+                    <>
+                    {viewData?.authorNickName}<br/>
+                    {viewData?.createdAt.substring(0,10)}
+                    </>
+                ) : (
+                    <>
+                    {viewData?.authorName}({viewData?.agencyName})<br/>
+                    {viewData?.createdAt.substring(0,10)}
+                    </>
+                )}
+            </div>
+            <div style={{padding:'20px',borderBottom:'1px solid #000000',whiteSpace: 'pre-wrap'}}>
+                {viewData?.content}<br/>
+                {viewData?.images?.map((imgUrl, index) => {
+                    return(
+                        <img
+                            key={index}
+                            src={imgUrl.url}
+                            style={{ width: 'auto', maxHeight: '200px', display: 'block', marginBottom: '10px' }}
+                        />
+                    );
+                })}
+            </div>
+            <div style={{padding:'20px',borderBottom:'1px solid #000000',whiteSpace: 'pre-wrap'}}>
+                <button type="button" onClick={() => {onClickBoardModeIdx("VIEW", null);}}>뒤로가기</button>
+                {'   '}
+                    {viewData?.authorId === 84 || viewData?.authorNickName === 'DH58401' ?(
+                    <>
+                    <button onClick={() => {onClickBoardModeIdx("EDIT", boardIdx);}}>수정하기</button>
+                    {'   '}
+                    <button type="button" onClick={() => {deleteData();}}>삭제하기</button>
+                    </>
+                ):""}
+            </div>
+        </div>
+    );
+}

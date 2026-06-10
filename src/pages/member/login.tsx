@@ -44,7 +44,7 @@ export default function Login() {
       }
     } catch (err: any) {
       if (err.response) {
-        alert(`서버 오류: ${err.response.status}`);
+        alert(`서버 오류: ${err.response.status}`); 
       } else if (err.request) {
         alert('서버에 연결하지 못했습니다.');
       } else {

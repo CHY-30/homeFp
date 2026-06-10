@@ -23,7 +23,7 @@ export default function ParentComponent() {
   const [parentData, setParentData] = useState("(대기 중)");
   const [childData, setChildData] = useState("(대기 중)");
 
-  const mq = (aa: any) =>{
+  const mq = (aa: string) =>{
     if(aa === "a"){setParentData("공부중이니?");setChildData("(대기 중)");}
     if(aa === "b"){setParentData("밥먹었니?");setChildData("(대기 중)");}
   }
