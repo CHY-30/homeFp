@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import "../../css/gongLayout.css"
 import { apiGongsil } from "../../utils/apiGongsil"
 import { useForm } from "react-hook-form";
+import { gbImagesUpload } from "../../hooks/gbImagesUpload";
 
 interface ListViewType{
     onClickBoardModeIdx: (nextMode: string, nextIdx: number | null) => void;
@@ -14,16 +15,13 @@ export default function ListView({onClickBoardModeIdx, boardIdx}: ListViewType) 
         id: number; // 고유번호
         title: string; // 제목
         content: string; // 상세내용
-        images?: {url: string}[]; // 이미지
-        createdAt: string; // 작성일
         communityCategoryType: string; //타입
-        authorName: string; //작성명
-        agencyName: string; //업체명
-        authorNickName: string; //익명닉네임
     }
 
+    //업로드 커스텀훅
+    const { upLoadedImages, isUploading, gbUploadImages, gbRemoveImage, gbSetImages } = gbImagesUpload();
+
     const communityCategoryTypeWrite = ['일반', '익명', '구인_구직', '중개사무소']
-    //const [editData, setEditData] = useState<gongsilEdit>(); //내용
 
     useEffect(() => {
 
@@ -36,6 +34,11 @@ export default function ListView({onClickBoardModeIdx, boardIdx}: ListViewType) 
             setValue("communityCategoryType", modData.communityCategoryType);
             setValue("title", modData.title);
             setValue("content", modData.content);
+
+            if (modData.images){
+                gbSetImages(modData.images);
+            }
+
           } catch (err) {
             alert("데이터 불러오기 실패");
           }
@@ -59,8 +62,25 @@ export default function ListView({onClickBoardModeIdx, boardIdx}: ListViewType) 
 
     const currentCategory = watch('communityCategoryType');
 
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if(!e.target.files) return;
+        const files = Array.from(e.target.files);
+        if(files.length === 0) return;
+        await gbUploadImages(files);
+        e.target.value = '';
+    }
+
     const onsubmit = async (data: gongsilEdit) =>{
 
+
+        const gbImagesIds = upLoadedImages? upLoadedImages.map((imgid) => imgid.id) : []; //이미지 아이디 추출
+        const submitData = {
+            ...data,
+            imageIds: gbImagesIds,
+        }        
+
+        console.log(submitData);
+        
         if(boardIdx === null){
 
             const confirmLeave = window.confirm(
@@ -71,7 +91,7 @@ export default function ListView({onClickBoardModeIdx, boardIdx}: ListViewType) 
             }
 
             try {
-                await apiGongsil.post('/api/community/posts', data);
+                await apiGongsil.post('/api/community/posts', submitData);
                 //alert('글쓰기 완료');
                 onClickBoardModeIdx('RESET', null);
             } catch (err: any) {
@@ -89,7 +109,7 @@ export default function ListView({onClickBoardModeIdx, boardIdx}: ListViewType) 
             }
 
             try {
-                await apiGongsil.patch(`/api/community/posts/${boardIdx}`, data);
+                await apiGongsil.patch(`/api/community/posts/${boardIdx}`, submitData);
                 //alert('수정 완료');
                 onClickBoardModeIdx('RESET', boardIdx);
             } catch (err: any) {
@@ -98,13 +118,12 @@ export default function ListView({onClickBoardModeIdx, boardIdx}: ListViewType) 
 
         }
     }
-
+    
     return(
         <div>
             <form onSubmit={handleSubmit(onsubmit)}>
             <div style={{padding:'20px',borderBottom:'1px solid #000000'}}>
 
-                <input type='hidden' {...register('communityCategoryType', { required: true })}></input>
                 {communityCategoryTypeWrite.map((category) =>{
                     const isCheckCCT = currentCategory === category;
                     
@@ -149,6 +168,27 @@ export default function ListView({onClickBoardModeIdx, boardIdx}: ListViewType) 
                 />
                 {errors.content && <p style={{ color: 'red', fontSize: '12px' }}>{errors.content.message}</p>}
             </div>
+            {<div style={{padding:'20px',borderBottom:'1px solid #000000'}}>
+                <input type="file" accept="image/*" multiple onChange={handleFileChange} disabled={isUploading}></input>
+                {isUploading && <span className="upload-loader">사진 업로드 중...</span>}
+            </div>}
+            {upLoadedImages.length > 0 && (
+                <div style={{padding:'20px',borderBottom:'1px solid #000000'}}>
+                    {upLoadedImages.map((imgUrl, index) => (
+                        <div key={index} className="preview-item">
+                            {/* 문자열 배열이므로 imgUrl 자체를 src에 바인딩합니다 */}
+                            <img src={imgUrl.smallUrl} alt="미리보기" className="preview-img" />
+                            <button 
+                                type="button" 
+                                className="preview-delete-btn" 
+                                onClick={() => gbRemoveImage(index)} // 정확한 삭제 함수명 매칭
+                            >
+                                &times;
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
             <div style={{padding:'20px',borderBottom:'1px solid #000000',whiteSpace: 'pre-wrap'}}>
                 <button type="button" onClick={() => {onClickBoardModeIdx("VIEW", boardIdx);}}>뒤로가기</button>
                 {'   '}
