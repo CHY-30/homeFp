@@ -77,6 +77,8 @@ export default function ListView({onClickBoardModeIdx, boardIdx}: ListViewType) 
             ...data,
             imageIds: gbImagesIds,
         }        
+
+        //console.log(submitData);
         
         if(boardIdx === null){
 
