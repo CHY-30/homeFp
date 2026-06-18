@@ -72,14 +72,11 @@ export default function ListView({onClickBoardModeIdx, boardIdx}: ListViewType) 
 
     const onsubmit = async (data: gongsilEdit) =>{
 
-
         const gbImagesIds = upLoadedImages? upLoadedImages.map((imgid) => imgid.id) : []; //이미지 아이디 추출
         const submitData = {
             ...data,
             imageIds: gbImagesIds,
         }        
-
-        console.log(submitData);
         
         if(boardIdx === null){
 
@@ -175,7 +172,7 @@ export default function ListView({onClickBoardModeIdx, boardIdx}: ListViewType) 
             {upLoadedImages.length > 0 && (
                 <div style={{padding:'20px',borderBottom:'1px solid #000000'}}>
                     {upLoadedImages.map((imgUrl, index) => (
-                        <div key={index} className="preview-item">
+                        <span key={index}>
                             {/* 문자열 배열이므로 imgUrl 자체를 src에 바인딩합니다 */}
                             <img src={imgUrl.smallUrl} alt="미리보기" className="preview-img" />
                             <button 
@@ -185,7 +182,7 @@ export default function ListView({onClickBoardModeIdx, boardIdx}: ListViewType) 
                             >
                                 &times;
                             </button>
-                        </div>
+                        </span>
                     ))}
                 </div>
             )}

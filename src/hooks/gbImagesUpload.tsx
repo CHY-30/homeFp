@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { apiGongsil } from "../utils/apiGongsil"
+import { sanitizeImageFiles } from "../utils/imageSanitizer";
 
-interface uLIType{
+interface upIType{
     id: string;
     bucket: string;
     url: string;
@@ -11,7 +12,7 @@ interface uLIType{
 }
 
 export function gbImagesUpload(){
-    const [upLoadedImages, setUpLoadedImages] = useState<uLIType[]>([]);
+    const [upLoadedImages, setUpLoadedImages] = useState<upIType[]>([]);
     const [isUploading, setIsUploading] = useState(false);
 
     const gbUploadImages = async(files: File[]) => {
@@ -19,7 +20,12 @@ export function gbImagesUpload(){
         setIsUploading(true);
 
         const formData = new FormData();
-        files.forEach((file) => formData.append('images', file, file.name));
+
+        const processedFiles = await sanitizeImageFiles(files);
+   
+        processedFiles.forEach(({ blob, name }) => {
+            formData.append('images', blob, name);
+        });
 
         try{
             const response = await apiGongsil.post('/api/images/communities', formData, {
@@ -41,7 +47,7 @@ export function gbImagesUpload(){
     };
 
     //수정시 목록체우기
-    const gbSetImages = (images: uLIType[]) =>{
+    const gbSetImages = (images: upIType[]) =>{
         setUpLoadedImages(images);
     }
 
