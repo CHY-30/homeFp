@@ -25,7 +25,7 @@ export default function ListView({onClickBoardModeIdx, boardIdx}: ListViewType) 
 
     useEffect(() => {
 
-        if(boardIdx === null){return}// 없으면 부르지마
+        if(boardIdx === null){return}// 없으면 부르지마 글쓰기 수정X
         const fetchData = async () => {
           try {
             const res = await apiGongsil.get(`/api/community/posts/${boardIdx}`);
@@ -72,7 +72,11 @@ export default function ListView({onClickBoardModeIdx, boardIdx}: ListViewType) 
 
     const onsubmit = async (data: gongsilEdit) =>{
 
-        const gbImagesIds = upLoadedImages? upLoadedImages.map((imgid) => imgid.id) : []; //이미지 아이디 추출
+        let gbImagesIds = [''];//이미지 아이디 추출
+        if(upLoadedImages && upLoadedImages.length > 0){
+            gbImagesIds = upLoadedImages.map((imagesList) => imagesList.id)
+        }
+        
         const submitData = {
             ...data,
             imageIds: gbImagesIds,
