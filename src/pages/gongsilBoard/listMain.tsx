@@ -62,7 +62,7 @@ export default function ListMain({onClickBoardModeIdx, boardIdx}:ListMainType) {
        if (inView && hasNextPage && !isFetchingNextPage){
            fetchNextPage();
        }
-    },[inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+    },[inView, hasNextPage, isFetchingNextPage]);
 
     if (status === 'pending') return <div></div>; //로딩 중...
     if (status === 'error') return <div>에러 발생</div>;
