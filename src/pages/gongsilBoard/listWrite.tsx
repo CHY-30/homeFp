@@ -4,12 +4,12 @@ import { apiGongsil } from "../../utils/apiGongsil"
 import { useForm } from "react-hook-form";
 import { gbImagesUpload } from "../../hooks/gbImagesUpload";
 
-interface ListViewType{
+interface ListWriteType{
     onClickBoardModeIdx: (nextMode: string, nextIdx: number | null) => void;
     boardIdx: number | null;    
 }
 
-export default function ListView({onClickBoardModeIdx, boardIdx}: ListViewType) {
+export default function ListWrite({onClickBoardModeIdx, boardIdx}: ListWriteType) {
 
     interface gongsilEdit{
         id: number; // 고유번호
