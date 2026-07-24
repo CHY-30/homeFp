@@ -64,7 +64,7 @@ export default function ListMain({onClickBoardModeIdx, boardIdx}:ListMainType) {
        }
     },[inView, hasNextPage, isFetchingNextPage]);
 
-    if (status === 'pending') return <div></div>; //로딩 중...
+    //if (status === 'pending') return <div>로딩 중</div>; //로딩 중...
     if (status === 'error') return <div>에러 발생</div>;
 
     const handleClear = () => {
